@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HZ Menu - FiveM</title>
     <style>
-        /* Styles existants */
         body {
             margin: 0;
             padding: 0;
@@ -13,82 +12,9 @@
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             color: #fff;
             min-height: 100vh;
+            overflow: hidden;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            background: rgba(15, 15, 25, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        h1 {
-            color: #64b5f6;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .content {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .main-content {
-            flex: 3;
-            min-width: 300px;
-        }
-
-        .sidebar {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .card {
-            background: rgba(20, 20, 30, 0.95);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .card h2 {
-            color: #64b5f6;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(100, 200, 255, 0.3);
-        }
-
-        .menu-button {
-            background: linear-gradient(45deg, #64b5f6, #2196f3);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-block;
-            margin: 10px 0;
-            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3);
-        }
-
-        .menu-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(33, 150, 243, 0.5);
-        }
-
-        /* Styles du menu HZ */
         .hz-menu-container {
             position: fixed;
             top: 0;
@@ -221,66 +147,15 @@
             background: #f44336;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .menu-container {
                 width: 90%;
                 margin: 20px;
             }
-            
-            .content {
-                flex-direction: column;
-            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🎮 HZ Menu - FiveM</h1>
-            <p>Menu de cheat pour FiveM avec intégration complète</p>
-        </header>
-        
-        <div class="content">
-            <div class="main-content">
-                <div class="card">
-                    <h2>🔧 Contrôles</h2>
-                    <p>Utilisez les touches <strong>~INPUT_VEH_DUCK~</strong> pour ouvrir le menu</p>
-                    <p>Utilisez <strong>/hzmenu</strong> pour ouvrir via commande</p>
-                    <button class="menu-button" onclick="openMenu()">Ouvrir le Menu HZ</button>
-                </div>
-                
-                <div class="card">
-                    <h2>📋 Fonctionnalités</h2>
-                    <ul>
-                        <li>God Mode</li>
-                        <li>Infinite Ammo</li>
-                        <li>Speed Boost</li>
-                        <li>No Clip</li>
-                        <li>ESP & Radar</li>
-                        <li>Visual Effects</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="sidebar">
-                <div class="card">
-                    <h2>📊 Statistiques</h2>
-                    <p>Version: <strong>5.0</strong></p>
-                    <p>Statut: <span class="status-indicator status-on"></span> Actif</p>
-                    <p>Utilisateurs: <strong>150+</strong></p>
-                </div>
-                
-                <div class="card">
-                    <h2>⚙️ Paramètres</h2>
-                    <p>Auto Save: <span class="status-indicator status-on"></span> Activé</p>
-                    <p>Auto Load: <span class="status-indicator status-on"></span> Activé</p>
-                    <p>Debug Mode: <span class="status-indicator status-off"></span> Désactivé</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Menu HZ -->
     <div class="hz-menu-container" id="hzMenu">
         <div class="menu-container">
@@ -297,7 +172,6 @@
     <script>
         // Variables globales
         let currentSettings = {};
-        let currentMenu = null;
         let resourceName = null;
 
         // Initialisation
@@ -311,9 +185,8 @@
 
         // Fonction pour récupérer le nom de la ressource parente
         function GetParentResourceName() {
-            // Dans FiveM, on peut utiliser window.name ou récupérer via une méthode spécifique
-            // Pour cette implémentation, on suppose que le nom est disponible
-            return "hzmenu"; // Remplacer par le nom réel de votre ressource
+            // Utiliser window.name si disponible, sinon une valeur par défaut
+            return window.name || "hzmenu";
         }
 
         // Fonction pour charger les paramètres initiaux
@@ -455,11 +328,6 @@
             // Fermer le menu avec Escape
             if (event.key === 'Escape') {
                 closeMenu();
-            }
-            
-            // Ouvrir le menu avec la touche V
-            if (event.key === 'v' && event.ctrlKey) {
-                openMenu();
             }
         });
     </script>
