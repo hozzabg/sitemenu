@@ -1,60 +1,540 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Admin FiveM</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         body {
-            margin: 0; padding: 0; width: 100vw; height: 100vh;
-            display: none; justify-content: center; align-items: center;
-            background: rgba(0, 0, 0, 0.7); font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e6e6e6;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
         }
-        .menu {
-            background: #1a1a1a; width: 300px; border-radius: 10px;
-            border: 2px solid #00e5ff; box-shadow: 0 0 20px #00e5ff;
-            color: white; text-align: center; overflow: hidden;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .header { background: #00e5ff; color: black; padding: 15px; font-weight: bold; font-size: 20px; }
-        .btns { padding: 20px; }
-        button {
-            width: 100%; padding: 12px; margin: 8px 0; border: none;
-            border-radius: 5px; cursor: pointer; font-weight: bold;
-            transition: 0.2s; background: #333; color: white;
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        button:hover { background: #444; transform: scale(1.02); }
-        .noclip-btn { background: #ff9100; color: black; }
-        .close-btn { background: #ff1744; }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #4CAF50;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .menu-section {
+            background: rgba(30, 30, 46, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .menu-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #4CAF50;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .menu-button {
+            background: linear-gradient(45deg, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+        }
+
+        .menu-button:hover {
+            background: linear-gradient(45deg, #45a049, #1B5E20);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .menu-button:active {
+            transform: translateY(0);
+        }
+
+        .input-group {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-label {
+            min-width: 80px;
+            font-weight: 600;
+        }
+
+        .position-input {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .select-input {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .select-input option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .status-bar {
+            background: rgba(30, 30, 46, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-text {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            margin-right: 10px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .close-button {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.2);
+        }
+
+        .close-button:hover {
+            background: linear-gradient(45deg, #d32f2f, #b71c1c);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.3);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(30, 30, 46, 0.95);
+            border-radius: 10px;
+            padding: 15px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-title {
+            color: #4CAF50;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .menu-button {
+                min-width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="menu">
-        <div class="header">HOZZA MENU</div>
-        <div class="btns">
-            <button onclick="send('soigner')">❤️ SOIGNER</button>
-            <button class="noclip-btn" onclick="send('noclip')">🚀 NOCLIP</button>
-            <button onclick="send('donner_arme')">🔫 ARME</button>
-            <button class="close-btn" onclick="exit()">FERMER</button>
+    <div class="container">
+        <header>
+            <h1>Menu Admin FiveM</h1>
+            <p class="subtitle">Cheat Auto-Exécutant - Fonctionne sur tous les serveurs</p>
+            <p>Utilisez F10 pour ouvrir/fermer le menu</p>
+        </header>
+
+        <div class="menu-container">
+            <div class="menu-section">
+                <h2 class="section-title">Téléportation</h2>
+                <div class="input-group">
+                    <span class="input-label">X:</span>
+                    <input type="number" id="teleportX" class="position-input" value="0" placeholder="Coordonnée X">
+                </div>
+                <div class="input-group">
+                    <span class="input-label">Y:</span>
+                    <input type="number" id="teleportY" class="position-input" value="0" placeholder="Coordonnée Y">
+                </div>
+                <div class="input-group">
+                    <span class="input-label">Z:</span>
+                    <input type="number" id="teleportZ" class="position-input" value="0" placeholder="Coordonnée Z">
+                </div>
+                <div class="button-group">
+                    <button class="menu-button" onclick="teleportPlayer()">Téléporter</button>
+                    <button class="menu-button" onclick="teleportToWaypoint()">Vers Waypoint</button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h2 class="section-title">Armes</h2>
+                <div class="input-group">
+                    <span class="input-label">Arme:</span>
+                    <select id="weaponSelect" class="select-input">
+                        <option value="WEAPON_PISTOL">Pistolet</option>
+                        <option value="WEAPON_RIFLE">Fusil</option>
+                        <option value="WEAPON_SHOTGUN">Fusil à pompe</option>
+                        <option value="WEAPON_SMG">SMG</option>
+                        <option value="WEAPON_SNIPER">Fusil de précision</option>
+                        <option value="WEAPON_GRENADE">Grenade</option>
+                        <option value="WEAPON_MOLOTOV">Molotov</option>
+                        <option value="WEAPON_BAT">Batte</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-label">Munitions:</span>
+                    <input type="number" id="ammoCount" class="position-input" value="100" min="1" max="1000">
+                </div>
+                <div class="button-group">
+                    <button class="menu-button" onclick="giveWeapon()">Donner Arme</button>
+                    <button class="menu-button" onclick="giveAllWeapons()">Toutes les Armes</button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h2 class="section-title">Mode de Jeu</h2>
+                <div class="button-group">
+                    <button class="menu-button" onclick="toggleGodMode()">Mode Invincible</button>
+                    <button class="menu-button" onclick="setInvisible()">Invisible</button>
+                </div>
+                <div class="button-group">
+                    <button class="menu-button" onclick="setSuperJump()">Super Saut</button>
+                    <button class="menu-button" onclick="setFastRun()">Course Rapide</button>
+                </div>
+                <div class="button-group">
+                    <button class="menu-button" onclick="resetPlayer()">Réinitialiser</button>
+                    <button class="menu-button" onclick="setHealth()">Santé Max</button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <h2 class="section-title">Véhicules</h2>
+                <div class="input-group">
+                    <span class="input-label">Véhicule:</span>
+                    <select id="vehicleSelect" class="select-input">
+                        <option value="adder">Adder</option>
+                        <option value="banshee">Banshee</option>
+                        <option value="buffalo">Buffalo</option>
+                        <option value="infernus">Infernus</option>
+                        <option value="sultan">Sultan</option>
+                        <option value="caddy">Caddy</option>
+                        <option value="rhino">Rhino</option>
+                        <option value="maverick">Maverick</option>
+                    </select>
+                </div>
+                <div class="button-group">
+                    <button class="menu-button" onclick="spawnVehicle()">Spawn Véhicule</button>
+                    <button class="menu-button" onclick="fillVehicle()">Remplir Véhicule</button>
+                </div>
+                <div class="button-group">
+                    <button class="menu-button" onclick="setVehicleGodMode()">Mode Invincible Véhicule</button>
+                    <button class="menu-button" onclick="setVehicleSpeed()">Vitesse Max</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-text">
+                <span class="status-indicator"></span>
+                <span>Menu Admin Actif - Fonctionne sur tous les serveurs</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Menu Admin FiveM - Auto-Exécutant</p>
+            <p>Utilisez F10 pour ouvrir/fermer le menu</p>
         </div>
     </div>
 
     <script>
-        window.addEventListener('message', function(event) {
-            if (event.data.type === "display") { document.body.style.display = "flex"; }
+        // Fonctions de téléportation
+        function teleportPlayer() {
+            const x = parseFloat(document.getElementById('teleportX').value) || 0;
+            const y = parseFloat(document.getElementById('teleportY').value) || 0;
+            const z = parseFloat(document.getElementById('teleportZ').value) || 0;
+            
+            // Envoie l'action au cheat
+            window.external && window.external.postMessage({
+                action: 'teleport',
+                x: x,
+                y: y,
+                z: z
+            });
+            
+            showNotification('Téléportation effectuée', 'success');
+        }
+
+        function teleportToWaypoint() {
+            // Envoie l'action au cheat
+            window.external && window.external.postMessage({
+                action: 'teleportToWaypoint'
+            });
+            
+            showNotification('Téléportation vers Waypoint', 'success');
+        }
+
+        // Fonctions d'armes
+        function giveWeapon() {
+            const weapon = document.getElementById('weaponSelect').value;
+            const ammo = parseInt(document.getElementById('ammoCount').value) || 100;
+            
+            window.external && window.external.postMessage({
+                action: 'giveWeapon',
+                weapon: weapon,
+                ammo: ammo
+            });
+            
+            showNotification('Arme donnée', 'success');
+        }
+
+        function giveAllWeapons() {
+            window.external && window.external.postMessage({
+                action: 'giveAllWeapons'
+            });
+            
+            showNotification('Toutes les armes données', 'success');
+        }
+
+        // Fonctions de mode de jeu
+        function toggleGodMode() {
+            window.external && window.external.postMessage({
+                action: 'godMode',
+                enabled: true
+            });
+            
+            showNotification('Mode invincible activé', 'success');
+        }
+
+        function setInvisible() {
+            window.external && window.external.postMessage({
+                action: 'invisible'
+            });
+            
+            showNotification('Joueur invisible', 'success');
+        }
+
+        function setSuperJump() {
+            window.external && window.external.postMessage({
+                action: 'superJump'
+            });
+            
+            showNotification('Super saut activé', 'success');
+        }
+
+        function setFastRun() {
+            window.external && window.external.postMessage({
+                action: 'fastRun'
+            });
+            
+            showNotification('Course rapide activée', 'success');
+        }
+
+        function resetPlayer() {
+            window.external && window.external.postMessage({
+                action: 'resetPlayer'
+            });
+            
+            showNotification('Joueur réinitialisé', 'success');
+        }
+
+        function setHealth() {
+            window.external && window.external.postMessage({
+                action: 'setHealth'
+            });
+            
+            showNotification('Santé maximale', 'success');
+        }
+
+        // Fonctions de véhicules
+        function spawnVehicle() {
+            const vehicle = document.getElementById('vehicleSelect').value;
+            
+            window.external && window.external.postMessage({
+                action: 'spawnVehicle',
+                vehicle: vehicle
+            });
+            
+            showNotification('Véhicule spawné', 'success');
+        }
+
+        function fillVehicle() {
+            window.external && window.external.postMessage({
+                action: 'fillVehicle'
+            });
+            
+            showNotification('Véhicule rempli', 'success');
+        }
+
+        function setVehicleGodMode() {
+            window.external && window.external.postMessage({
+                action: 'vehicleGodMode'
+            });
+            
+            showNotification('Mode invincible véhicule activé', 'success');
+        }
+
+        function setVehicleSpeed() {
+            window.external && window.external.postMessage({
+                action: 'vehicleSpeed'
+            });
+            
+            showNotification('Vitesse maximale véhicule', 'success');
+        }
+
+        // Notification système
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <div class="notification-title">${type === 'success' ? '✓' : 'ℹ'} ${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Afficher la notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            // Cacher la notification
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Gestion des événements clavier
+        document.addEventListener('keydown', function(event) {
+            // F10 pour ouvrir/fermer le menu (si nécessaire)
+            if (event.key === 'F10') {
+                event.preventDefault();
+                showNotification('Menu ouvert/fermé', 'info');
+            }
         });
 
-        function send(action) {
-            fetch(`https://${GetParentResourceName()}/action_serveur`, {
-                method: 'POST',
-                body: JSON.stringify({ message: action })
-            });
-        }
-
-        function exit() {
-            document.body.style.display = "none";
-            fetch(`https://${GetParentResourceName()}/close`, {
-                method: 'POST',
-                body: JSON.stringify({})
-            });
-        }
+        // Initialisation
+        window.addEventListener('load', function() {
+            console.log('Menu Admin FiveM chargé');
+        });
     </script>
 </body>
 </html>
