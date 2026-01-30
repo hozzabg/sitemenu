@@ -3,62 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        /* On force l'affichage pour le test, on cachera après */
         body {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            display: none; /* Le Lua l'affichera */
-            justify-content: center;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.5);
-            font-family: Arial, sans-serif;
+            margin: 0; padding: 0; width: 100vw; height: 100vh;
+            display: none; justify-content: center; align-items: center;
+            background: rgba(0, 0, 0, 0.7); font-family: 'Arial', sans-serif;
         }
-        .box {
-            background: #222;
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px solid #00ff00;
-            text-align: center;
-            color: white;
-            width: 250px;
+        .menu {
+            background: #1a1a1a; width: 300px; border-radius: 10px;
+            border: 2px solid #00e5ff; box-shadow: 0 0 20px #00e5ff;
+            color: white; text-align: center; overflow: hidden;
         }
+        .header { background: #00e5ff; color: black; padding: 15px; font-weight: bold; font-size: 20px; }
+        .btns { padding: 20px; }
         button {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 10px;
-            cursor: pointer;
-            background: #444;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            width: 100%; padding: 12px; margin: 8px 0; border: none;
+            border-radius: 5px; cursor: pointer; font-weight: bold;
+            transition: 0.2s; background: #333; color: white;
         }
-        button:hover { background: #666; }
+        button:hover { background: #444; transform: scale(1.02); }
+        .noclip-btn { background: #ff9100; color: black; }
+        .close-btn { background: #ff1744; }
     </style>
 </head>
 <body>
-
-    <div class="box">
-        <h3>MENU HOZZA</h3>
-        <button onclick="send('soigner')">❤️ SOIGNER</button>
-        <button onclick="send('noclip')">🚀 NOCLIP</button>
-        <button onclick="exit()" style="background: #a22;">FERMER</button>
+    <div class="menu">
+        <div class="header">HOZZA MENU</div>
+        <div class="btns">
+            <button onclick="send('soigner')">❤️ SOIGNER</button>
+            <button class="noclip-btn" onclick="send('noclip')">🚀 NOCLIP</button>
+            <button onclick="send('donner_arme')">🔫 ARME</button>
+            <button class="close-btn" onclick="exit()">FERMER</button>
+        </div>
     </div>
 
     <script>
-        // Écoute les ordres de FiveM
         window.addEventListener('message', function(event) {
-            if (event.data.type === "display") {
-                document.body.style.display = "flex";
-            }
+            if (event.data.type === "display") { document.body.style.display = "flex"; }
         });
 
-        // Fonction pour envoyer au Lua
         function send(action) {
-            // Utilise 'https://' suivi du nom de la ressource où tu injectes le script
-            // Si tu ne connais pas le nom, on utilise GetParentResourceName()
             fetch(`https://${GetParentResourceName()}/action_serveur`, {
                 method: 'POST',
                 body: JSON.stringify({ message: action })
