@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface FiveM</title>
+    <style>
+        /* On cache le corps par défaut pour qu'il n'apparaisse qu'au déclenchement Lua */
+        body {
+            display: none; 
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7); /* Fond semi-transparent */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+
+        .menu {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #3498db;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            width: 300px;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .close-btn {
+            background: #e74c3c;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu">
+        <h1>Menu Serveur</h1>
+        <p>Interface hébergée sur le Web</p>
+        
+        <button onclick="envoyerAction('soigner')">Se Soigner</button>
+        <button onclick="envoyerAction('donner_arme')">Recevoir une arme</button>
+        
+        <button class="close-btn" onclick="fermerMenu()">Fermer</button>
+    </div>
+
+    <script>
+        // Écoute les messages provenant du script Lua (SendNUIMessage)
+        window.addEventListener('message', function(event) {
+            let item = event.data;
+
+            if (item.type === "display") {
+                document.body.style.display = "flex"; // Affiche le menu
+            }
+        });
+
+        // Fonction pour envoyer une information au script Lua
+        function envoyerAction(action) {
+            fetch(`https://${GetParentResourceName()}/action_serveur`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({
+                    message: action
+                })
+            }).then(resp => resp.json());
+        }
+
+        // Fonction pour fermer le menu
+        function fermerMenu() {
+            document.body.style.display = "none"; // Cache l'interface
+            
+            // On prévient le Lua pour qu'il enlève le focus de la souris (SetNuiFocus(false))
+            fetch(`https://${GetParentResourceName()}/close`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({})
+            }).then(resp => resp.json());
+        }
+
+        // Permet de fermer avec la touche 'Echap'
+        window.addEventListener('keyup', function (event) {
+            if (event.key === 'Escape') {
+                fermerMenu();
+            }
+        });
+    </script>
+</body>
+</html>
