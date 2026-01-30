@@ -3,23 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HZ MENU v5.0 - MODERN CHEAT MENU</title>
+    <title>HZ Menu - FiveM</title>
     <style>
-        * {
+        /* Styles existants */
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            min-height: 100vh;
         }
 
-        body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(15, 15, 25, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            color: #64b5f6;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .main-content {
+            flex: 3;
+            min-width: 300px;
+        }
+
+        .sidebar {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .card {
+            background: rgba(20, 20, 30, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card h2 {
+            color: #64b5f6;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(100, 200, 255, 0.3);
+        }
+
+        .menu-button {
+            background: linear-gradient(45deg, #64b5f6, #2196f3);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin: 10px 0;
+            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3);
+        }
+
+        .menu-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(33, 150, 243, 0.5);
+        }
+
+        /* Styles du menu HZ */
+        .hz-menu-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            color: #fff;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .hz-menu-container.active {
+            opacity: 1;
+            visibility: visible;
         }
 
         .menu-container {
@@ -30,516 +118,350 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .hz-menu-container.active .menu-container {
+            transform: scale(1);
         }
 
         .menu-header {
-            background: rgba(15, 15, 25, 0.9);
-            padding: 20px;
+            background: linear-gradient(45deg, #64b5f6, #2196f3);
+            padding: 15px;
             text-align: center;
-            border-bottom: 2px solid rgba(100, 200, 255, 0.3);
-            position: relative;
-        }
-
-        .menu-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #64b5f6;
-            text-shadow: 0 0 10px rgba(100, 181, 246, 0.5);
-        }
-
-        .menu-version {
-            font-size: 14px;
-            color: #90a4ae;
-            margin-bottom: 10px;
-        }
-
-        .menu-subtitle {
-            font-size: 16px;
-            color: #78909c;
-            font-weight: 500;
+            font-size: 20px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .menu-content {
-            padding: 15px;
-            max-height: 500px;
+            padding: 20px;
+            max-height: 400px;
             overflow-y: auto;
         }
 
-        .menu-category {
-            margin-bottom: 15px;
-            border-radius: 10px;
-            overflow: hidden;
-            background: rgba(30, 30, 40, 0.7);
-            border: 1px solid rgba(100, 200, 255, 0.1);
-        }
-
-        .category-header {
-            padding: 12px 15px;
-            background: rgba(100, 200, 255, 0.15);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .category-header:hover {
-            background: rgba(100, 200, 255, 0.25);
+        .category {
+            margin-bottom: 20px;
         }
 
         .category-title {
-            font-size: 16px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
+            background: rgba(100, 200, 255, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #64b5f6;
         }
 
-        .category-icon {
-            margin-right: 10px;
-            font-size: 18px;
+        .option {
+            padding: 10px;
+            margin-bottom: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .category-items {
-            padding: 10px 0;
+        .option:hover {
+            background: rgba(100, 200, 255, 0.2);
         }
 
-        .menu-item {
-            padding: 12px 15px;
+        .option.active {
+            background: rgba(100, 200, 255, 0.3);
+            border-left: 3px solid #64b5f6;
+        }
+
+        .toggle-option {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.2s ease;
-            cursor: pointer;
         }
 
-        .menu-item:hover {
-            background: rgba(100, 200, 255, 0.1);
-        }
-
-        .item-label {
-            font-size: 15px;
-            font-weight: 500;
-            flex: 1;
-        }
-
-        .item-value {
-            font-size: 14px;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-on {
-            background: rgba(100, 255, 150, 0.2);
-            color: #66bb6a;
-        }
-
-        .toggle-off {
-            background: rgba(255, 100, 100, 0.2);
-            color: #ff8a80;
-        }
-
-        .slider-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
+        .slider-option {
+            margin-top: 10px;
         }
 
         .slider {
-            flex: 1;
-            height: 6px;
-            -webkit-appearance: none;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            outline: none;
+            width: 100%;
+            margin-top: 5px;
         }
 
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #64b5f6;
-            cursor: pointer;
-            box-shadow: 0 0 5px rgba(100, 181, 246, 0.5);
-        }
-
-        .slider-value {
-            min-width: 40px;
-            text-align: right;
-            font-size: 14px;
-            color: #64b5f6;
-        }
-
-        .list-item {
-            background: rgba(100, 200, 255, 0.1);
-            padding: 8px 12px;
-            border-radius: 5px;
-            margin: 5px 0;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .list-item:hover {
-            background: rgba(100, 200, 255, 0.2);
-        }
-
-        .list-item.active {
-            background: rgba(100, 200, 255, 0.3);
-            color: #64b5f6;
-        }
-
-        .menu-footer {
-            padding: 15px;
-            background: rgba(15, 15, 25, 0.9);
-            border-top: 1px solid rgba(100, 200, 255, 0.3);
-            text-align: center;
-            font-size: 12px;
-            color: #90a4ae;
-        }
-
-        .menu-item:last-child {
-            border-bottom: none;
-        }
-
-        .item-toggle {
-            position: relative;
-            width: 50px;
-            height: 24px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .item-toggle::before {
-            content: '';
+        .close-button {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 50, 50, 0.8);
+            border: none;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            background: #fff;
-            top: 2px;
-            left: 2px;
-            transition: all 0.3s ease;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
         }
 
-        .item-toggle.active {
-            background: #64b5f6;
+        .close-button:hover {
+            background: rgba(255, 50, 50, 1);
         }
 
-        .item-toggle.active::before {
-            left: 28px;
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
         }
 
-        .scrollbar::-webkit-scrollbar {
-            width: 6px;
+        .status-on {
+            background: #4caf50;
         }
 
-        .scrollbar::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
+        .status-off {
+            background: #f44336;
         }
 
-        .scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(100, 200, 255, 0.3);
-            border-radius: 3px;
-        }
-
-        .scrollbar::-webkit-scrollbar-thumb:hover {
-            background: rgba(100, 200, 255, 0.5);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .category-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .category-content.open {
-            max-height: 500px;
-        }
-
-        .menu-item.active {
-            background: rgba(100, 200, 255, 0.2);
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-container {
+                width: 90%;
+                margin: 20px;
+            }
+            
+            .content {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="menu-container">
-        <div class="menu-header">
-            <div class="menu-title">HZ CHEAT</div>
-            <div class="menu-version">v5.0 Modern Edition</div>
-            <div class="menu-subtitle">Modern Edition</div>
-        </div>
+    <div class="container">
+        <header>
+            <h1>🎮 HZ Menu - FiveM</h1>
+            <p>Menu de cheat pour FiveM avec intégration complète</p>
+        </header>
         
-        <div class="menu-content scrollbar">
-            <!-- Categories will be generated here -->
+        <div class="content">
+            <div class="main-content">
+                <div class="card">
+                    <h2>🔧 Contrôles</h2>
+                    <p>Utilisez les touches <strong>~INPUT_VEH_DUCK~</strong> pour ouvrir le menu</p>
+                    <p>Utilisez <strong>/hzmenu</strong> pour ouvrir via commande</p>
+                    <button class="menu-button" onclick="openMenu()">Ouvrir le Menu HZ</button>
+                </div>
+                
+                <div class="card">
+                    <h2>📋 Fonctionnalités</h2>
+                    <ul>
+                        <li>God Mode</li>
+                        <li>Infinite Ammo</li>
+                        <li>Speed Boost</li>
+                        <li>No Clip</li>
+                        <li>ESP & Radar</li>
+                        <li>Visual Effects</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <div class="card">
+                    <h2>📊 Statistiques</h2>
+                    <p>Version: <strong>5.0</strong></p>
+                    <p>Statut: <span class="status-indicator status-on"></span> Actif</p>
+                    <p>Utilisateurs: <strong>150+</strong></p>
+                </div>
+                
+                <div class="card">
+                    <h2>⚙️ Paramètres</h2>
+                    <p>Auto Save: <span class="status-indicator status-on"></span> Activé</p>
+                    <p>Auto Load: <span class="status-indicator status-on"></span> Activé</p>
+                    <p>Debug Mode: <span class="status-indicator status-off"></span> Désactivé</p>
+                </div>
+            </div>
         </div>
-        
-        <div class="menu-footer">
-            ARROWS: Navigate | ENTER: Select | BACK: Close
+    </div>
+
+    <!-- Menu HZ -->
+    <div class="hz-menu-container" id="hzMenu">
+        <div class="menu-container">
+            <div class="menu-header">
+                HZ Menu - FiveM
+                <button class="close-button" onclick="closeMenu()">&times;</button>
+            </div>
+            <div class="menu-content" id="menuContent">
+                <!-- Les options seront chargées ici via JavaScript -->
+            </div>
         </div>
     </div>
 
     <script>
-        // Données du menu
-        const menuData = [
-            {
-                name: "Movement",
-                color: [100, 200, 255],
-                items: [
-                    { type: "toggle", label: "No Clip", key: "noClip", value: false },
-                    { type: "slider", label: "No Clip Speed", key: "noClipSpeed", value: 5.0, min: 0.1, max: 20.0, step: 0.1 },
-                    { type: "toggle", label: "Infinite Jump", key: "infiniteJump", value: false },
-                    { type: "toggle", label: "Wall Jump", key: "wallJump", value: false }
-                ]
-            },
-            {
-                name: "Combat",
-                color: [255, 100, 100],
-                items: [
-                    { type: "toggle", label: "God Mode", key: "godMode", value: false },
-                    { type: "toggle", label: "Infinite Ammo", key: "infiniteAmmo", value: false },
-                    { type: "toggle", label: "Auto Fire", key: "autoFire", value: false },
-                    { type: "toggle", label: "No Recoil", key: "noRecoil", value: false }
-                ]
-            },
-            {
-                name: "Visual",
-                color: [100, 255, 150],
-                items: [
-                    { type: "toggle", label: "ESP", key: "esp", value: false },
-                    { type: "toggle", label: "Radar", key: "radar", value: false },
-                    { type: "toggle", label: "Night Vision", key: "nightVision", value: false },
-                    { type: "toggle", label: "X-Ray", key: "xRay", value: false }
-                ]
-            },
-            {
-                name: "Player",
-                color: [255, 200, 100],
-                items: [
-                    { type: "toggle", label: "Invisible", key: "invisible", value: false },
-                    { type: "toggle", label: "Speed Boost", key: "speedBoost", value: false },
-                    { type: "slider", label: "Run Speed", key: "runSpeed", value: 1.0, min: 0.1, max: 5.0, step: 0.1 },
-                    { type: "toggle", label: "Jump Height", key: "jumpHeight", value: false }
-                ]
-            },
-            {
-                name: "Weapons",
-                color: [150, 100, 255],
-                items: [
-                    { type: "toggle", label: "All Weapons", key: "allWeapons", value: false },
-                    { type: "toggle", label: "Ammo Unlimited", key: "ammoUnlimited", value: false },
-                    { type: "toggle", label: "Instant Reload", key: "instantReload", value: false },
-                    { type: "toggle", label: "No Spread", key: "noSpread", value: false }
-                ]
-            },
-            {
-                name: "Settings",
-                color: [100, 150, 255],
-                items: [
-                    { type: "toggle", label: "Auto Save", key: "autoSave", value: true },
-                    { type: "toggle", label: "Auto Load", key: "autoLoad", value: true },
-                    { type: "toggle", label: "Auto Update", key: "autoUpdate", value: true },
-                    { type: "toggle", label: "Debug Mode", key: "debugMode", value: false }
-                ]
-            }
-        ];
+        // Variables globales
+        let currentSettings = {};
+        let currentMenu = null;
+        let resourceName = null;
 
-        // États du menu
-        let menuOpen = true;
-        let currentCategory = 0;
-        let currentOption = 0;
-        let isEditing = false;
-        let activeValue = null;
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Récupérer le nom de la ressource
+            resourceName = GetParentResourceName();
+            
+            // Charger les paramètres initiaux
+            loadInitialSettings();
+        });
 
-        // États des paramètres
-        const settings = {
-            noClip: false,
-            noClipSpeed: 5.0,
-            infiniteJump: false,
-            wallJump: false,
-            godMode: false,
-            infiniteAmmo: false,
-            autoFire: false,
-            noRecoil: false,
-            esp: false,
-            radar: false,
-            nightVision: false,
-            xRay: false,
-            invisible: false,
-            speedBoost: false,
-            runSpeed: 1.0,
-            jumpHeight: false,
-            allWeapons: false,
-            ammoUnlimited: false,
-            instantReload: false,
-            noSpread: false,
-            autoSave: true,
-            autoLoad: true,
-            autoUpdate: true,
-            debugMode: false
-        };
+        // Fonction pour récupérer le nom de la ressource parente
+        function GetParentResourceName() {
+            // Dans FiveM, on peut utiliser window.name ou récupérer via une méthode spécifique
+            // Pour cette implémentation, on suppose que le nom est disponible
+            return "hzmenu"; // Remplacer par le nom réel de votre ressource
+        }
 
-        // Fonction pour générer le menu
-        function generateMenu() {
-            const content = document.querySelector('.menu-content');
-            content.innerHTML = '';
-
-            menuData.forEach((category, catIndex) => {
-                const categoryElement = document.createElement('div');
-                categoryElement.className = 'menu-category';
-                categoryElement.innerHTML = `
-                    <div class="category-header" onclick="toggleCategory(${catIndex})">
-                        <div class="category-title">
-                            <span class="category-icon">▶</span>
-                            ${category.name}
-                        </div>
-                        <div class="item-value">${category.items.length} items</div>
-                    </div>
-                    <div class="category-content" id="category-${catIndex}">
-                        <div class="category-items">
-                            ${category.items.map((item, itemIndex) => createItemElement(item, catIndex, itemIndex)).join('')}
-                        </div>
-                    </div>
-                `;
-                content.appendChild(categoryElement);
+        // Fonction pour charger les paramètres initiaux
+        function loadInitialSettings() {
+            // Envoyer une requête pour obtenir les paramètres
+            fetch(`https://${resourceName}/getSettings`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: "getSettings"
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.settings) {
+                    updateSettings(data.settings, data.categories);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des paramètres:', error);
             });
         }
 
-        // Fonction pour créer un élément d'item
-        function createItemElement(item, catIndex, itemIndex) {
-            const key = item.key;
-            const value = settings[key];
-            
-            if (item.type === 'toggle') {
-                return `
-                    <div class="menu-item" onclick="toggleItem(${catIndex}, ${itemIndex})">
-                        <div class="item-label">${item.label}</div>
-                        <div class="item-toggle ${value ? 'active' : ''}"></div>
-                    </div>
-                `;
-            } else if (item.type === 'slider') {
-                return `
-                    <div class="menu-item">
-                        <div class="item-label">${item.label}</div>
-                        <div class="slider-container">
-                            <input type="range" min="${item.min}" max="${item.max}" step="${item.step}" 
-                                   value="${value}" class="slider" 
-                                   onchange="updateSlider(${catIndex}, ${itemIndex}, this.value)">
-                            <div class="slider-value">${value}</div>
-                        </div>
-                    </div>
-                `;
-            }
-            return '';
+        // Fonction pour ouvrir le menu
+        function openMenu() {
+            document.getElementById('hzMenu').classList.add('active');
+            // Envoyer une action NUI au serveur
+            sendNuiMessage({
+                action: "openMenu"
+            });
         }
 
-        // Fonction pour basculer une catégorie
-        function toggleCategory(catIndex) {
-            const category = document.querySelector(`#category-${catIndex}`);
-            const icon = category.previousElementSibling.querySelector('.category-icon');
-            
-            if (category.classList.contains('open')) {
-                category.classList.remove('open');
-                icon.textContent = '▶';
-            } else {
-                category.classList.add('open');
-                icon.textContent = '▼';
-            }
+        // Fonction pour fermer le menu
+        function closeMenu() {
+            document.getElementById('hzMenu').classList.remove('active');
+            // Envoyer une action NUI au serveur
+            sendNuiMessage({
+                action: "closeMenu"
+            });
         }
 
-        // Fonction pour basculer un item
-        function toggleItem(catIndex, itemIndex) {
-            const category = menuData[catIndex];
-            const item = category.items[itemIndex];
-            const key = item.key;
-            
-            settings[key] = !settings[key];
-            
-            // Mettre à jour l'interface
-            const items = document.querySelectorAll('.menu-item');
-            const itemElement = items[catIndex * 10 + itemIndex];
-            
-            if (itemElement) {
-                const toggle = itemElement.querySelector('.item-toggle');
-                if (toggle) {
-                    toggle.classList.toggle('active', settings[key]);
-                }
-            }
-            
-            console.log(`Toggled ${item.label}: ${settings[key]}`);
+        // Fonction pour envoyer un message NUI (CORRECTE)
+        function sendNuiMessage(data) {
+            fetch(`https://${resourceName}/menuAction`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .catch(error => {
+                console.error('Erreur lors de l\'envoi du message NUI:', error);
+            });
+        }
+
+        // Fonction pour basculer un toggle
+        function toggleItem(key) {
+            // Envoyer l'action au serveur
+            sendNuiMessage({
+                action: "toggleItem",
+                key: key
+            });
         }
 
         // Fonction pour mettre à jour un slider
-        function updateSlider(catIndex, itemIndex, value) {
-            const category = menuData[catIndex];
-            const item = category.items[itemIndex];
-            const key = item.key;
-            
-            settings[key] = parseFloat(value);
-            
-            // Mettre à jour l'affichage
-            const sliderValue = document.querySelectorAll('.slider-value')[catIndex * 10 + itemIndex];
-            if (sliderValue) {
-                sliderValue.textContent = value;
-            }
-            
-            console.log(`Updated ${item.label}: ${value}`);
+        function updateSlider(key, value) {
+            // Envoyer l'action au serveur
+            sendNuiMessage({
+                action: "updateSlider",
+                key: key,
+                value: value
+            });
         }
 
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', () => {
-            generateMenu();
-            
-            // Ajouter des événements clavier
-            document.addEventListener('keydown', (e) => {
-                if (!menuOpen) return;
-                
-                switch(e.key) {
-                    case 'ArrowUp':
-                        e.preventDefault();
-                        currentOption = Math.max(0, currentOption - 1);
-                        break;
-                    case 'ArrowDown':
-                        e.preventDefault();
-                        currentOption = Math.min(menuData[currentCategory].items.length - 1, currentOption + 1);
-                        break;
-                    case 'Enter':
-                        e.preventDefault();
-                        toggleItem(currentCategory, currentOption);
-                        break;
-                    case 'Escape':
-                        e.preventDefault();
-                        menuOpen = false;
-                        document.querySelector('.menu-container').classList.add('hidden');
-                        break;
-                }
+        // Fonction pour mettre à jour les paramètres
+        function updateSettings(settings, categories) {
+            currentSettings = settings;
+            renderMenu(categories);
+        }
+
+        // Fonction pour afficher le menu
+        function renderMenu(categories) {
+            const menuContent = document.getElementById('menuContent');
+            let html = '';
+
+            categories.forEach(category => {
+                html += `<div class="category">
+                    <div class="category-title">${category.name}</div>
+                    <div class="category-options">`;
+
+                category.items.forEach(item => {
+                    if (item.type === 'toggle') {
+                        const isActive = currentSettings[item.key];
+                        html += `
+                            <div class="option toggle-option" onclick="toggleItem('${item.key}')">
+                                <span>${item.label}</span>
+                                <span class="status-indicator ${isActive ? 'status-on' : 'status-off'}"></span>
+                            </div>
+                        `;
+                    } else if (item.type === 'slider') {
+                        const value = currentSettings[item.key];
+                        html += `
+                            <div class="option">
+                                <div>${item.label}</div>
+                                <div class="slider-option">
+                                    <input type="range" min="${item.min}" max="${item.max}" step="${item.step}" 
+                                           value="${value}" 
+                                           onchange="updateSlider('${item.key}', this.value)"
+                                           class="slider">
+                                    <span>${value}</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                html += `</div></div>`;
             });
+
+            menuContent.innerHTML = html;
+        }
+
+        // Écouteur pour recevoir les messages NUI
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            if (data.action === 'updateSettings') {
+                updateSettings(data.settings, data.categories);
+            } else if (data.action === 'openMenu') {
+                openMenu();
+            } else if (data.action === 'closeMenu') {
+                closeMenu();
+            }
         });
 
-        // Fonction pour simuler l'ouverture du menu
-        function openMenu() {
-            menuOpen = true;
-            document.querySelector('.menu-container').classList.remove('hidden');
-        }
-
-        // Fonction pour simuler la fermeture du menu
-        function closeMenu() {
-            menuOpen = false;
-            document.querySelector('.menu-container').classList.add('hidden');
-        }
-
-        // Initialiser le menu
-        openMenu();
+        // Gestion des touches
+        document.addEventListener('keydown', function(event) {
+            // Fermer le menu avec Escape
+            if (event.key === 'Escape') {
+                closeMenu();
+            }
+            
+            // Ouvrir le menu avec la touche V
+            if (event.key === 'v' && event.ctrlKey) {
+                openMenu();
+            }
+        });
     </script>
 </body>
 </html>
