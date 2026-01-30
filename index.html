@@ -1,142 +1,77 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Menu Serveur</title>
     <style>
-        /* On cache l'interface par défaut */
+        /* On force l'affichage pour le test, on cachera après */
         body {
-            display: none;
             margin: 0;
             padding: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.6); /* Fond sombre transparent */
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            display: none; /* Le Lua l'affichera */
             justify-content: center;
             align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            font-family: Arial, sans-serif;
+        }
+        .box {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00ff00;
+            text-align: center;
             color: white;
-            user-select: none;
+            width: 250px;
         }
-
-        .container {
-            background: #1e1e2e;
-            width: 350px;
-            border-radius: 12px;
-            border: 2px solid #7289da; /* Couleur style Discord */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            overflow: hidden;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .header {
-            background: #7289da;
-            padding: 20px;
-            font-size: 22px;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
-
-        .content {
-            padding: 20px;
-        }
-
         button {
+            display: block;
             width: 100%;
-            background: #2f3136;
-            color: #ffffff;
-            border: 1px solid #4f545c;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            font-size: 16px;
+            margin: 10px 0;
+            padding: 10px;
             cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            background: #444;
+            color: white;
+            border: none;
+            border-radius: 5px;
         }
-
-        button:hover {
-            background: #4f545c;
-            border-color: #7289da;
-            transform: translateY(-2px);
-        }
-
-        .btn-noclip {
-            background: #f1c40f;
-            color: black;
-            font-weight: bold;
-        }
-
-        .btn-noclip:hover {
-            background: #d4ac0d;
-        }
-
-        .btn-close {
-            background: #e74c3c;
-            margin-top: 10px;
-        }
-
-        .btn-close:hover {
-            background: #c0392b;
-        }
+        button:hover { background: #666; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">🛠️ HOZZA EXECUTOR</div>
-        
-        <div class="content">
-            <button onclick="envoyerAction('soigner')">❤️ Se Soigner</button>
-            <button class="btn-noclip" onclick="envoyerAction('noclip')">🚀 Activer Noclip</button>
-            <button onclick="envoyerAction('donner_arme')">🔫 Recevoir Arme</button>
-            
-            <hr style="border: 0; border-top: 1px solid #4f545c; margin: 15px 0;">
-            
-            <button class="btn-close" onclick="fermerMenu()">❌ Fermer</button>
-        </div>
+    <div class="box">
+        <h3>MENU HOZZA</h3>
+        <button onclick="send('soigner')">❤️ SOIGNER</button>
+        <button onclick="send('noclip')">🚀 NOCLIP</button>
+        <button onclick="exit()" style="background: #a22;">FERMER</button>
     </div>
 
     <script>
-        // Écoute FiveM
+        // Écoute les ordres de FiveM
         window.addEventListener('message', function(event) {
             if (event.data.type === "display") {
                 document.body.style.display = "flex";
             }
         });
 
-        // Envoie les actions au Lua
-        function envoyerAction(nomAction) {
+        // Fonction pour envoyer au Lua
+        function send(action) {
+            // Utilise 'https://' suivi du nom de la ressource où tu injectes le script
+            // Si tu ne connais pas le nom, on utilise GetParentResourceName()
             fetch(`https://${GetParentResourceName()}/action_serveur`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: nomAction })
+                body: JSON.stringify({ message: action })
             });
         }
 
-        // Ferme proprement
-        function fermerMenu() {
+        function exit() {
             document.body.style.display = "none";
             fetch(`https://${GetParentResourceName()}/close`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({})
             });
         }
-
-        // Fermer avec Echap
-        window.addEventListener('keyup', function (e) {
-            if (e.key === 'Escape') fermerMenu();
-        });
     </script>
 </body>
 </html>
