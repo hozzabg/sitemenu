@@ -3,110 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interface FiveM</title>
+    <title>Mon Menu Serveur</title>
     <style>
-        /* On cache le corps par défaut pour qu'il n'apparaisse qu'au déclenchement Lua */
+        /* On cache l'interface par défaut */
         body {
-            display: none; 
+            display: none;
             margin: 0;
             padding: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.7); /* Fond semi-transparent */
-            display: flex;
+            background: rgba(0, 0, 0, 0.6); /* Fond sombre transparent */
+            font-family: 'Segoe UI', Roboto, sans-serif;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: white;
-            overflow: hidden;
+            user-select: none;
         }
 
-        .menu {
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 15px;
-            border: 2px solid #3498db;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            width: 300px;
+        .container {
+            background: #1e1e2e;
+            width: 350px;
+            border-radius: 12px;
+            border: 2px solid #7289da; /* Couleur style Discord */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            overflow: hidden;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .header {
+            background: #7289da;
+            padding: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .content {
+            padding: 20px;
         }
 
         button {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin-top: 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
             width: 100%;
+            background: #2f3136;
+            color: #ffffff;
+            border: 1px solid #4f545c;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
         button:hover {
-            background: #2980b9;
+            background: #4f545c;
+            border-color: #7289da;
+            transform: translateY(-2px);
         }
 
-        .close-btn {
+        .btn-noclip {
+            background: #f1c40f;
+            color: black;
+            font-weight: bold;
+        }
+
+        .btn-noclip:hover {
+            background: #d4ac0d;
+        }
+
+        .btn-close {
             background: #e74c3c;
             margin-top: 10px;
+        }
+
+        .btn-close:hover {
+            background: #c0392b;
         }
     </style>
 </head>
 <body>
 
-    <div class="menu">
-        <h1>Menu Serveur</h1>
-        <p>Interface hébergée sur le Web</p>
+    <div class="container">
+        <div class="header">🛠️ HOZZA EXECUTOR</div>
         
-        <button onclick="envoyerAction('soigner')">Se Soigner</button>
-        <button onclick="envoyerAction('donner_arme')">Recevoir une arme</button>
-        
-        <button class="close-btn" onclick="fermerMenu()">Fermer</button>
+        <div class="content">
+            <button onclick="envoyerAction('soigner')">❤️ Se Soigner</button>
+            <button class="btn-noclip" onclick="envoyerAction('noclip')">🚀 Activer Noclip</button>
+            <button onclick="envoyerAction('donner_arme')">🔫 Recevoir Arme</button>
+            
+            <hr style="border: 0; border-top: 1px solid #4f545c; margin: 15px 0;">
+            
+            <button class="btn-close" onclick="fermerMenu()">❌ Fermer</button>
+        </div>
     </div>
 
     <script>
-        // Écoute les messages provenant du script Lua (SendNUIMessage)
+        // Écoute FiveM
         window.addEventListener('message', function(event) {
-            let item = event.data;
-
-            if (item.type === "display") {
-                document.body.style.display = "flex"; // Affiche le menu
+            if (event.data.type === "display") {
+                document.body.style.display = "flex";
             }
         });
 
-        // Fonction pour envoyer une information au script Lua
-        function envoyerAction(action) {
+        // Envoie les actions au Lua
+        function envoyerAction(nomAction) {
             fetch(`https://${GetParentResourceName()}/action_serveur`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                },
-                body: JSON.stringify({
-                    message: action
-                })
-            }).then(resp => resp.json());
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: nomAction })
+            });
         }
 
-        // Fonction pour fermer le menu
+        // Ferme proprement
         function fermerMenu() {
-            document.body.style.display = "none"; // Cache l'interface
-            
-            // On prévient le Lua pour qu'il enlève le focus de la souris (SetNuiFocus(false))
+            document.body.style.display = "none";
             fetch(`https://${GetParentResourceName()}/close`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({})
-            }).then(resp => resp.json());
+            });
         }
 
-        // Permet de fermer avec la touche 'Echap'
-        window.addEventListener('keyup', function (event) {
-            if (event.key === 'Escape') {
-                fermerMenu();
-            }
+        // Fermer avec Echap
+        window.addEventListener('keyup', function (e) {
+            if (e.key === 'Escape') fermerMenu();
         });
     </script>
 </body>
